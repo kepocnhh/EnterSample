@@ -1,3 +1,3 @@
 rootProject.name = "EnterSample"
 
-include("app")
+include("shared", "pf1")
