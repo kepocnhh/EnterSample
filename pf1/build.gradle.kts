@@ -22,4 +22,5 @@ dependencies {
     implementation(compose.desktop.currentOs)
     implementation("com.github.kepocnhh:Logics:0.1.3-SNAPSHOT")
     runtimeOnly("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.8.1")
+    implementation("com.github.kepocnhh:Bytes:0.2.1-SNAPSHOT")
 }

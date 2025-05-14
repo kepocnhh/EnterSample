@@ -5,7 +5,7 @@ data class Injection(
     val loggers: Logger.Factory,
     val locals: Locals,
     val sessions: Sessions,
-//    val secrets: Secrets,
-//    val assets: Assets,
+    val secrets: Secrets,
+    val assets: Assets,
     val times: Times,
 )

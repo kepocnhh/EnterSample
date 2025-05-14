@@ -13,4 +13,5 @@ plugins {
 dependencies {
     implementation(compose.desktop.currentOs)
     implementation("com.github.kepocnhh:Logics:0.1.3-SNAPSHOT")
+    implementation("com.github.kepocnhh:Bytes:0.2.1-SNAPSHOT")
 }

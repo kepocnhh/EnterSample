@@ -5,8 +5,10 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
 import kotlinx.coroutines.Dispatchers
 import org.kepocnhh.es.provider.Contexts
+import org.kepocnhh.es.provider.FinalAssets
 import org.kepocnhh.es.provider.FinalLocals
 import org.kepocnhh.es.provider.FinalLoggers
+import org.kepocnhh.es.provider.FinalSecrets
 import org.kepocnhh.es.provider.FinalTimes
 import org.kepocnhh.es.provider.Injection
 import org.kepocnhh.es.provider.Logger
@@ -32,8 +34,8 @@ internal object App {
             loggers = loggers,
             locals = FinalLocals(),
             sessions = Sessions(privateKey = null, enterSalt = null, enterState = null),
-//            secrets = secrets,
-//            assets = FinalAssets(context = this),
+            secrets = FinalSecrets(),
+            assets = FinalAssets(),
             times = FinalTimes(),
         )
     }
