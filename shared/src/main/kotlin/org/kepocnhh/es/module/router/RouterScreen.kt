@@ -5,6 +5,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import org.kepocnhh.es.App
 import org.kepocnhh.es.module.auth.AuthScreen
+import org.kepocnhh.es.module.main.MainScreen
 
 @Composable
 fun RouterScreen() {
@@ -15,20 +16,20 @@ fun RouterScreen() {
     }
     when (state) {
         is RouterLogics.State.Keys -> {
-            TODO("RouterScreen:$state")
-//            if (state.authorized) {
-//                MainScreen(
-//                    publicKey = state.publicKey,
-//                    onLock = logics::lock,
-//                )
-//            } else {
+            if (state.authorized) {
+                MainScreen(
+                    publicKey = state.publicKey,
+                    onLock = logics::lock,
+                )
+            } else {
+                TODO("RouterScreen:$state")
 //                EnterScreen(
 //                    onEnter = { privateKey: ByteArray, _ ->
 //                        logics.enter(privateKey = privateKey)
 //                    },
 //                    onExit = logics::exit,
 //                )
-//            }
+            }
         }
         RouterLogics.State.NoKeys -> {
             AuthScreen(

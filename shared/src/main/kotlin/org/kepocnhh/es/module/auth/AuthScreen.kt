@@ -15,14 +15,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.kepocnhh.es.App
 import org.kepocnhh.es.entity.Keys
@@ -52,10 +50,9 @@ internal fun AuthScreen(
             }
         }
     }
-    val coroutineScope = rememberCoroutineScope()
     val popup = popupState.value
     if (popup != null) {
-        coroutineScope.launch {
+        LaunchedEffect(popup) {
             withContext(App.injection.contexts.default) {
                 delay(1.seconds)
                 popupState.value = null
