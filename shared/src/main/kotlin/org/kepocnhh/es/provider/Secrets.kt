@@ -8,4 +8,5 @@ interface Secrets {
     fun sha256(encoded: ByteArray): ByteArray
     fun getSecretKey(password: CharArray): SecretKey
     fun encrypt(key: SecretKey, decrypted: ByteArray): ByteArray
+    fun decrypt(key: SecretKey, encrypted: ByteArray): ByteArray
 }

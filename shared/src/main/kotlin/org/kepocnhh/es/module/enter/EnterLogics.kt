@@ -1,0 +1,38 @@
+package org.kepocnhh.es.module.enter
+
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.withContext
+import org.kepocnhh.es.provider.Injection
+import sp.kx.bytes.toHEX
+import sp.kx.logics.Logics
+
+internal class EnterLogics(
+    private val injection: Injection,
+) : Logics(injection.contexts.main) {
+    sealed interface Event {
+        class OnEnter(val result: Result<Pair<ByteArray, ByteArray>>) : Event
+    }
+
+    private val _events = MutableSharedFlow<Event>()
+    val events = _events.asSharedFlow()
+
+    private val logger = injection.loggers.create("[Enter]")
+
+    fun enter(pin: String) = launch {
+        logger.debug("enter($pin)...")
+        val result = withContext(injection.contexts.default) {
+            runCatching {
+                if (pin.isBlank()) error("PIN is blank!")
+                val password = injection.secrets.sha256(pin.toByteArray())
+                val secretKey = injection.secrets.getSecretKey(password = password.toHEX().toCharArray())
+                logger.debug("secret:key: ${injection.secrets.sha256(secretKey.encoded).toHEX()}")
+                val keys = injection.locals.keys ?: TODO("No local keys!")
+                val decrypted = injection.secrets.decrypt(secretKey, keys.privateKeyEncrypted)
+                logger.debug("private:key: ${injection.secrets.sha256(decrypted).toHEX()}")
+                decrypted to password
+            }
+        }
+        _events.emit(Event.OnEnter(result))
+    }
+}
