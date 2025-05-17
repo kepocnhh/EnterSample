@@ -6,7 +6,10 @@ import org.kepocnhh.es.module.router.RouterScreen
 
 fun main() {
     application {
-        Window(onCloseRequest = ::exitApplication) {
+        Window(
+            onCloseRequest = ::exitApplication,
+            title = "EnterSample-pf2",
+        ) {
             RouterScreen()
         }
     }

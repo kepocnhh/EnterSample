@@ -1,3 +1,5 @@
+import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+
 repositories {
     google()
     mavenCentral()
@@ -13,7 +15,11 @@ plugins {
 compose.desktop {
     application {
         mainClass = "org.kepocnhh.es.MainKt" // todo
-        nativeDistributions.packageName = rootProject.name
+        nativeDistributions {
+            packageName = "${rootProject.name}-${project.name}"
+            packageVersion = "1.0.0"
+            targetFormats(TargetFormat.Dmg)
+        }
     }
 }
 
