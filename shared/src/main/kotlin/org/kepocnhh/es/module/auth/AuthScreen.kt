@@ -24,14 +24,53 @@ import androidx.compose.ui.window.Popup
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import org.kepocnhh.es.App
+import org.kepocnhh.es.Env
+import org.kepocnhh.es.entity.AuthorizedPackage
 import org.kepocnhh.es.entity.Keys
+import org.kepocnhh.es.provider.Dirs
+import sp.kx.bytes.readInt
+import sp.kx.bytes.toHEX
+import java.util.UUID
 import kotlin.time.Duration.Companion.seconds
+
+private fun getAuthorizedPackages(
+    dirs: Dirs,
+    namespace: String,
+): List<AuthorizedPackage> {
+    val result = mutableListOf<AuthorizedPackage>()
+    val files = dirs.files.listFiles().orEmpty()
+    val prefix = "$namespace-keys-"
+    for (file in files) {
+        if (!file.name.startsWith(prefix = prefix)) continue
+        val id = runCatching {
+            UUID.fromString(file.name.substring(startIndex = prefix.length))
+        }.getOrNull() ?: continue
+        val publicKey = runCatching {
+            val bytes = file.readBytes()
+            var index = 0
+            val publicKey = ByteArray(bytes.readInt(index = index))
+            index += 4
+            System.arraycopy(bytes, index, publicKey, 0, publicKey.size)
+            publicKey
+        }.getOrNull() ?: continue
+        val ap = AuthorizedPackage(
+            id = id,
+            publicKey = publicKey,
+            namespace = namespace,
+        )
+        result.add(ap)
+    }
+    return result
+}
 
 @Composable
 internal fun AuthScreen(
     onAuth: (Keys, ByteArray) -> Unit,
+    onEnter: () -> Unit,
 ) {
     val logger = remember { App.injection.loggers.create("[Auth]") }
+    val dirs = remember { App.injection.dirs }
+    val secrets = remember { App.injection.secrets }
     val logics = App.logics<AuthLogics>()
     val popupState = remember { mutableStateOf<String?>(null) }
     LaunchedEffect(Unit) {
@@ -46,6 +85,17 @@ internal fun AuthScreen(
                             logger.warning("auth error: $error")
                             popupState.value = "auth error: $error"
                         },
+                    )
+                }
+                is AuthLogics.Event.OnEnter -> {
+                    event.result.fold(
+                        onSuccess = {
+                            onEnter()
+                        },
+                        onFailure = { error ->
+                            logger.warning("enter error: $error")
+                            popupState.value = "enter error: $error"
+                        }
                     )
                 }
             }
@@ -119,29 +169,27 @@ internal fun AuthScreen(
                     .wrapContentSize(),
                 text = "auth",
             )
-//            val aps = remember { getAuthorizedPackages(context = context, logger = logger, secrets = secrets) }
+            val aps = remember { getAuthorizedPackages(dirs = dirs, namespace = Env.namespace) }
             LazyColumn(modifier = Modifier.fillMaxWidth().weight(1f)) {
-//                aps.forEachIndexed { index, authorizedPackage ->
-//                    item(key = "$index/${authorizedPackage.name}") {
-//                        val text = """
-//                            pcg: ${authorizedPackage.name}
-//                            activity: ${authorizedPackage.activity}
-//                            public key: ${secrets.sha256(authorizedPackage.publicKey).toHEX()}
-//                        """.trimIndent()
-//                        BasicText(
-//                            modifier = Modifier.fillMaxWidth()
-//                                .background(Color.Yellow)
-//                                .clickable {
-//                                    logics.enter(
-//                                        authorizedPackage = authorizedPackage,
-//                                        authority = BuildConfig.PROVIDER_AUTHORITY,
-//                                    )
-//                                }
-//                                .wrapContentHeight(),
-//                            text = text,
-//                        )
-//                    }
-//                }
+                aps.forEachIndexed { index, authorizedPackage ->
+                    item(key = "$index/${authorizedPackage.id}") {
+                        val text = """
+                            id: ${authorizedPackage.id}
+                            public key: ${secrets.sha256(authorizedPackage.publicKey).toHEX()}
+                        """.trimIndent()
+                        BasicText(
+                            modifier = Modifier.fillMaxWidth()
+                                .background(Color.Yellow)
+                                .clickable {
+                                    logics.enter(
+                                        authorizedPackage = authorizedPackage,
+                                    )
+                                }
+                                .wrapContentHeight(),
+                            text = text,
+                        )
+                    }
+                }
             }
         }
     }

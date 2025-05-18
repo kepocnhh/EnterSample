@@ -8,4 +8,5 @@ data class Injection(
     val secrets: Secrets,
     val assets: Assets,
     val times: Times,
+    val dirs: Dirs,
 )

@@ -2,8 +2,8 @@ package org.kepocnhh.es.entity
 
 import java.util.UUID
 
-class Keys(
+class AuthorizedPackage(
     val id: UUID,
     val publicKey: ByteArray,
-    val privateKeyEncrypted: ByteArray,
+    val namespace: String,
 )

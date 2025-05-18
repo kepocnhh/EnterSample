@@ -44,6 +44,7 @@ fun RouterScreen(color: Color) {
             RouterLogics.State.NoKeys -> {
                 AuthScreen(
                     onAuth = logics::auth,
+                    onEnter = logics::requestState,
                 )
             }
             null -> {

@@ -12,7 +12,7 @@ fun main() {
             onCloseRequest = ::exitApplication,
             title = "EnterSample-${Env.appId}",
         ) {
-            RouterScreen(color = Color.Yellow)
+            RouterScreen(color = Color.Cyan)
         }
     }
 }
