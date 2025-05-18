@@ -8,7 +8,6 @@ import org.kepocnhh.es.provider.Injection
 import sp.kx.bytes.toHEX
 import sp.kx.logics.Logics
 import java.security.PublicKey
-import java.security.Security
 
 internal class AuthLogics(
     private val injection: Injection,
@@ -27,15 +26,6 @@ internal class AuthLogics(
         privateKey: ByteArray,
         password: CharArray,
     ): Keys {
-        setOf(
-            "SecretKeyFactory",
-            "Cipher",
-        ).forEach { serviceName ->
-            logger.debug("service: $serviceName") // todo
-            Security.getAlgorithms(serviceName)?.forEachIndexed { index, it ->
-//                logger.debug("$index] $it") // todo
-            }
-        }
         val secretKey = injection.secrets.getSecretKey(password = password)
         logger.debug("secret:key: ${injection.secrets.sha256(secretKey.encoded).toHEX()}")
         return Keys(

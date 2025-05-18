@@ -32,8 +32,11 @@ internal object App {
                 default = Dispatchers.Default,
             ),
             loggers = loggers,
-            locals = FinalLocals(),
-            sessions = Sessions(privateKey = null, enterSalt = null, enterState = null),
+            locals = FinalLocals(
+                namespace = "org.kepocnhh.es",
+                appId = Env.appId ?: error("No app ID!")
+            ),
+            sessions = Sessions(privateKey = null),
             secrets = FinalSecrets(),
             assets = FinalAssets(),
             times = FinalTimes(),

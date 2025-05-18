@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.runtime.Composable
@@ -118,6 +119,30 @@ internal fun AuthScreen(
                     .wrapContentSize(),
                 text = "auth",
             )
+//            val aps = remember { getAuthorizedPackages(context = context, logger = logger, secrets = secrets) }
+            LazyColumn(modifier = Modifier.fillMaxWidth().weight(1f)) {
+//                aps.forEachIndexed { index, authorizedPackage ->
+//                    item(key = "$index/${authorizedPackage.name}") {
+//                        val text = """
+//                            pcg: ${authorizedPackage.name}
+//                            activity: ${authorizedPackage.activity}
+//                            public key: ${secrets.sha256(authorizedPackage.publicKey).toHEX()}
+//                        """.trimIndent()
+//                        BasicText(
+//                            modifier = Modifier.fillMaxWidth()
+//                                .background(Color.Yellow)
+//                                .clickable {
+//                                    logics.enter(
+//                                        authorizedPackage = authorizedPackage,
+//                                        authority = BuildConfig.PROVIDER_AUTHORITY,
+//                                    )
+//                                }
+//                                .wrapContentHeight(),
+//                            text = text,
+//                        )
+//                    }
+//                }
+            }
         }
     }
 }
